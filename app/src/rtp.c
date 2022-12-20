@@ -196,6 +196,12 @@ sc_rtp_open(struct sc_rtp *rtp, const AVCodec *input_codec) {
         goto error_avformat_free_context;
     }
 
+    ostream->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+    ostream->codecpar->codec_id = input_codec->id;
+    ostream->codecpar->format = AV_PIX_FMT_YUV420P;
+    ostream->codecpar->width = rtp->declared_frame_size.width;
+    ostream->codecpar->height = rtp->declared_frame_size.height;
+
     ret = avio_open(&rtp->ctx->pb, rtp->out_url, AVIO_FLAG_WRITE);
     if (ret < 0) {
         LOGE("Failed to open output: %s", rtp->out_url);
